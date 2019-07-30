@@ -1,0 +1,31 @@
+version: '3'
+services:
+    db2:
+        image: mysql:5.7
+        container_name: db2
+        ports:
+             - 3308:3306
+        volumes:
+             - ./mysql_data/data:/var/lib/mysql
+             - ./mysql_init/init:/docker-entrypoint-initdb.d
+        environment:
+            MYSQL_ROOT_PASSWORD: password
+            MYSQL_USER: wordpress
+            MYSQL_PASSWORD: password
+            MYSQL_DATABASE: wordpress
+        restart: always
+
+    wp2:
+        image: wordpress:latest
+        environment:
+            VIRTUAL_HOST: blog.example.com
+            WORDPRESS_DB_HOST: db2:3306
+            WORDPRESS_DB_NAME: wordpress
+            WORDPRESS_DB_USER: wordpress
+            WORDPRESS_DB_PASSWORD: password
+        restart: always
+
+networks:
+    default:
+        external:
+            name: shared
